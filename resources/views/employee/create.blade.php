@@ -69,7 +69,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="lastName" class="form-label">Last Name</label>
-                            <input class="form-control" type="text" name="lastName" id="lastName" value=""
+                            <input class="form-control" type="text" name="lastName" id="lastName" value="{{old('lastName')}}"
                                 placeholder="Enter Last Name">
                             @error('lastName')
                                 <div class="text-danger">{{ $message }}</div>
@@ -77,7 +77,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input class="form-control" type="text" name="email" id="email" value=""
+                            <input class="form-control" type="text" name="email" id="email" value="{{old('email')}}"
                                 placeholder="Enter Email">
                             @error('email')
                                 <div class="text-danger">{{ $message }}</div>
@@ -85,7 +85,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="age" class="form-label">Age</label>
-                            <input class="form-control" type="text" name="age" id="age" value=""
+                            <input class="form-control" type="text" name="age" id="age" value="{{old('age')}}"
                                 placeholder="Enter Age">
                             @error('age')
                                 <div class="text-danger">{{ $message }}</div>
