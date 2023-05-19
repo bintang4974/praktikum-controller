@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
@@ -14,7 +16,18 @@ class EmployeeController extends Controller
     {
         $pageTitle = 'Employee List';
 
-        return view('employee.index', ['pageTitle' => $pageTitle]);
+        $employees = Employee::join('positions', 'positions.id', '=', 'employees.position_id')->select('employees.*', 'positions.name as position_name')->get();
+
+        // $employees = DB::select('
+        //     SELECT *, employees.id as employee_id, positions.name as position_name
+        //     FROM employees
+        //     LEFT JOIN positions on employees.position_id = positions.id
+        // ');
+
+        return view('employee.index', [
+            'pageTitle' => $pageTitle,
+            'employees' => $employees
+        ]);
     }
 
     /**
@@ -24,7 +37,9 @@ class EmployeeController extends Controller
     {
         $pageTitle = 'Create Employee';
 
-        return view('employee.create', compact('pageTitle'));
+        $positions = DB::select('SELECT * FROM positions');
+
+        return view('employee.create', compact('pageTitle', 'positions'));
     }
 
     /**
@@ -49,7 +64,24 @@ class EmployeeController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        return $request->all();
+        // INSERT QUERY
+        $employee = new Employee;
+        $employee->firstname = $request->input('firstName');
+        $employee->lastname = $request->input('lastName');
+        $employee->email = $request->input('email');
+        $employee->age = $request->input('age');
+        $employee->position_id = $request->input('position');
+        $employee->save();
+
+        // DB::table('employees')->insert([
+        //     'firstname' => $request->firstName,
+        //     'lastname' => $request->lastName,
+        //     'email' => $request->email,
+        //     'age' => $request->age,
+        //     'position_id' => $request->position,
+        // ]);
+
+        return redirect()->route('employees.index');
     }
 
     /**
