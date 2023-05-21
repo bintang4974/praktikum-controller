@@ -52,18 +52,18 @@
         <div class="table-responsive border p-3 rounded-3">
             <table class="table table-bordered table-hover table-striped mb-0 bg-white">
                 <thead>
-                    <tr>
+                    <tr class="text-center">
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
                         <th>Age</th>
                         <th>Position</th>
-                        <th></th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($employees as $employee)
-                        <tr>
+                        <tr class="text-center">
                             <td>{{ $employee->firstname }}</td>
                             <td>{{ $employee->lastname }}</td>
                             <td>{{ $employee->email }}</td>

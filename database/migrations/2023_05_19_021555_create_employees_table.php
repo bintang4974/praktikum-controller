@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('firstname');
             $table->string('lastname')->nullable();
             // $table->unsignedBigInteger('position_id');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->integer('age');
             $table->foreignId('position_id')->constrained();
             $table->timestamps();

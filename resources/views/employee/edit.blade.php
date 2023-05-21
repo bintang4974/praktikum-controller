@@ -38,8 +38,9 @@
     </nav>
 
     <div class="container-sm mt-5">
-        <form action="{{ route('employees.store') }}" method="POST">
+        <form action="{{ route('employees.update', $employee->id) }}" method="POST">
             @csrf
+            @method('PUT')
             <div class="row justify-content-center">
                 <div class="p-5 bg-light rounded-3 border col-xl-6">
 
@@ -62,7 +63,7 @@
                         <div class="col-md-6 mb-3">
                             <label for="firstName" class="form-label">First Name</label>
                             <input class="form-control" type="text" name="firstName" id="firstName"
-                                value="{{ old('firstName') }}" placeholder="Enter First Name">
+                                value="{{ $employee->firstname }}" placeholder="Enter First Name">
                             @error('firstName')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -70,7 +71,7 @@
                         <div class="col-md-6 mb-3">
                             <label for="lastName" class="form-label">Last Name</label>
                             <input class="form-control" type="text" name="lastName" id="lastName"
-                                value="{{ old('lastName') }}" placeholder="Enter Last Name">
+                                value="{{ $employee->lastname }}" placeholder="Enter Last Name">
                             @error('lastName')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -78,15 +79,15 @@
                         <div class="col-md-6 mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input class="form-control" type="text" name="email" id="email"
-                                value="{{ old('email') }}" placeholder="Enter Email">
-                            @error('email')
+                                value="{{ $employee->email }}" placeholder="Enter Email" readonly>
+                            {{-- @error('email')
                                 <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            @enderror --}}
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="age" class="form-label">Age</label>
                             <input class="form-control" type="text" name="age" id="age"
-                                value="{{ old('age') }}" placeholder="Enter Age">
+                                value="{{ $employee->age }}" placeholder="Enter Age">
                             @error('age')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -94,6 +95,7 @@
                         <div class="col-md-12 mb-3">
                             <label for="position" class="form-label">Position</label>
                             <select name="position" id="position" class="form-select">
+                                <option value="{{ $employee->position_id }}">{{ $employee->position_name }}</option>
                                 @foreach ($positions as $position)
                                     <option value="{{ $position->id }}">
                                         {{ old('position') == $position->id ? 'selected' : '' }}
