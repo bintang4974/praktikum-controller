@@ -39,7 +39,7 @@ class EmployeeController extends Controller
     {
         $pageTitle = 'Create Employee';
 
-        $positions = DB::select('SELECT * FROM positions');
+        $positions = Position::all();
 
         return view('employee.create', compact('pageTitle', 'positions'));
     }
@@ -115,9 +115,9 @@ class EmployeeController extends Controller
     {
         $pageTitle = 'Employee Edit';
 
-        $employee = Employee::find($id)
-            ->join('positions', 'positions.id', '=', 'employees.position_id')
+        $employee = Employee::leftJoin('positions', 'positions.id', '=', 'employees.position_id')
             ->select('employees.*', 'positions.name as position_name', 'positions.id as position_id')
+            ->where('employees.id', $id)
             ->first();
 
         $positions = Position::get();
@@ -138,14 +138,14 @@ class EmployeeController extends Controller
     {
         $messages = [
             'required' => ':Attribute harus diisi.',
-            // 'email' => 'Isi :attribute dengan format yang benar',
+            'email' => 'Isi :attribute dengan format yang benar',
             'numeric' => 'Isi :attribute dengan angka'
         ];
 
         $validator = Validator::make($request->all(), [
             'firstName' => 'required',
             'lastName' => 'required',
-            // 'email' => 'required|email',
+            'email' => 'required|email',
             'age' => 'required|numeric',
         ], $messages);
 
@@ -153,7 +153,7 @@ class EmployeeController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        Employee::find($id)->update([
+        Employee::where('id', $id)->update([
             'firstname' => $request->firstName,
             'lastname' => $request->lastName,
             'email' => $request->email,
