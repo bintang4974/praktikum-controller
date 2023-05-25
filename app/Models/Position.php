@@ -9,5 +9,8 @@ class Position extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'name', 'description'];
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
+    }
 }

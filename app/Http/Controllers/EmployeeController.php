@@ -17,8 +17,10 @@ class EmployeeController extends Controller
     {
         $pageTitle = 'Employee List';
 
-        $employees = Employee::join('positions', 'positions.id', '=', 'employees.position_id')
-        ->select('employees.*', 'positions.name as position_name')->get();
+        $employees = Employee::all();
+
+        // $employees = Employee::join('positions', 'positions.id', '=', 'employees.position_id')
+        // ->select('employees.*', 'positions.name as position_name')->get();
 
         // $employees = DB::select('
         //     SELECT *, employees.id as employee_id, positions.name as position_name
@@ -93,12 +95,16 @@ class EmployeeController extends Controller
     {
         $pageTitle = 'Employee Detail';
 
-        // RAW SQL QUERY
-        $employee = Employee::find($id)
-        ->join('positions', 'positions.id', '=', 'employees.position_id')
-        ->select('employees.*', 'positions.name as position_name')
-        ->first();
+        // Eloquent
+        $employee = Employee::find($id);
 
+        // query builder
+        // $employee = Employee::find($id)
+        // ->join('positions', 'positions.id', '=', 'employees.position_id')
+        // ->select('employees.*', 'positions.name as position_name')
+        // ->first();
+
+        // RAW SQL QUERY
         // $employee = collect(DB::select('
         // select *, employees.id as employee_id, positions.name as position_name
         // from employees
@@ -115,12 +121,17 @@ class EmployeeController extends Controller
     {
         $pageTitle = 'Employee Edit';
 
-        $employee = Employee::leftJoin('positions', 'positions.id', '=', 'employees.position_id')
-            ->select('employees.*', 'positions.name as position_name', 'positions.id as position_id')
-            ->where('employees.id', $id)
-            ->first();
+        // ELOQUENT
+        $positions = Position::all();
+        $employee = Employee::find($id);
 
-        $positions = Position::get();
+        // Query Builder
+        // $employee = Employee::leftJoin('positions', 'positions.id', '=', 'employees.position_id')
+        //     ->select('employees.*', 'positions.name as position_name', 'positions.id as position_id')
+        //     ->where('employees.id', $id)
+        //     ->first();
+
+        // $positions = Position::get();
 
         // dd($employee);
         return view('employee.edit', [
@@ -153,20 +164,23 @@ class EmployeeController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        Employee::where('id', $id)->update([
-            'firstname' => $request->firstName,
-            'lastname' => $request->lastName,
-            'email' => $request->email,
-            'age' => $request->age,
-            'position_id' => $request->position,
-        ]);
-        // $employee = new Employee;
-        // $employee->firstname = $request->input('firstName');
-        // $employee->lastname = $request->input('lastName');
-        // // $employee->email = $request->input('email');
-        // $employee->age = $request->input('age');
-        // $employee->position_id = $request->input('position');
-        // $employee->update();
+        // ELOQUENT
+        $employee = Employee::find($id);
+        $employee->firstname = $request->firstName;
+        $employee->lastname = $request->lastName;
+        $employee->email = $request->email;
+        $employee->age = $request->age;
+        $employee->position_id = $request->position;
+        $employee->save();
+
+        // Query Builder
+        // Employee::where('id', $id)->update([
+        //     'firstname' => $request->firstName,
+        //     'lastname' => $request->lastName,
+        //     'email' => $request->email,
+        //     'age' => $request->age,
+        //     'position_id' => $request->position,
+        // ]);
 
         return redirect()->route('employees.index');
     }
@@ -176,8 +190,11 @@ class EmployeeController extends Controller
      */
     public function destroy(string $id)
     {
+        // ELOQUENT
+        Employee::find($id)->delete();
+
         // QUERY BUILDER
-        Employee::where('id', $id)->delete();
+        // Employee::where('id', $id)->delete();
 
         // DB::table('employees')
         //     ->where('id', $id)
