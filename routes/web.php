@@ -28,6 +28,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('employees', EmployeeController::class);
     Route::get('profile', ProfileController::class)->name('profile');
     Route::get('download-file/{employeeId}', [EmployeeController::class, 'downloadFile'])->name('employees.downloadFile');
+    Route::get('getEmployees', [EmployeeController::class, 'getData'])->name('employees.getData');
+    Route::get('exportExcel', [EmployeeController::class, 'exportExcel'])->name('employees.exportExcel');
 });
 
 Route::get('home', [HomeController::class, 'index'])->name('home');

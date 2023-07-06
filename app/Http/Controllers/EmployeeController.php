@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EmployeesExport;
 use App\Models\Employee;
 use App\Models\Position;
 use Illuminate\Http\Request;
@@ -9,6 +10,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeeController extends Controller
 {
@@ -18,6 +21,8 @@ class EmployeeController extends Controller
     public function index()
     {
         $pageTitle = 'Employee List';
+
+        confirmDelete();
 
         $employees = Employee::all();
 
@@ -30,10 +35,21 @@ class EmployeeController extends Controller
         //     LEFT JOIN positions on employees.position_id = positions.id
         // ');
 
-        return view('employee.index', [
-            'pageTitle' => $pageTitle,
-            'employees' => $employees
-        ]);
+        return view('employee.index', compact('pageTitle', 'employees'));
+    }
+
+    public function getData(Request $request)
+    {
+        $employees = Employee::with('position');
+
+        if ($request->ajax()) {
+            return datatables()->of($employees)
+                ->addIndexColumn()
+                ->addColumn('actions', function ($employee) {
+                    return view('employee.actions', compact('employee'));
+                })
+                ->toJson();
+        }
     }
 
     /**
@@ -105,6 +121,8 @@ class EmployeeController extends Controller
         //     'age' => $request->age,
         //     'position_id' => $request->position,
         // ]);
+
+        Alert::success('Added Successfully', 'Employee Data Added Successfully.');
 
         return redirect()->route('employees.index');
     }
@@ -203,6 +221,8 @@ class EmployeeController extends Controller
         //     'position_id' => $request->position,
         // ]);
 
+        Alert::success('Changed Successfully', 'Employee Data Changed Successfully.');
+
         return redirect()->route('employees.index');
     }
 
@@ -215,6 +235,11 @@ class EmployeeController extends Controller
         if (Storage::exists($encryptedFilename)) {
             return Storage::download($encryptedFilename, $downloadFilename);
         }
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new EmployeesExport, 'employees.xlsx');
     }
 
     /**
@@ -231,6 +256,8 @@ class EmployeeController extends Controller
         // DB::table('employees')
         //     ->where('id', $id)
         //     ->delete();
+
+        Alert::success('Deleted Successfully', 'Employee Data Deleted Successfully.');
 
         return redirect()->route('employees.index');
     }

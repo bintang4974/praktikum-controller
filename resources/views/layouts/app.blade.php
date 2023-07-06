@@ -103,6 +103,8 @@
             @yield('content')
         </main>
     </div>
+    @include('sweetalert::alert')
+    @stack('scripts')
 </body>
 
 </html>
