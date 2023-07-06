@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\EmployeesExport;
 use App\Models\Employee;
 use App\Models\Position;
+use PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -240,6 +241,15 @@ class EmployeeController extends Controller
     public function exportExcel()
     {
         return Excel::download(new EmployeesExport, 'employees.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $employees = Employee::all();
+
+        $pdf = PDF::loadView('employee.export_pdf', compact('employees'));
+
+        return $pdf->download('employees.pdf');
     }
 
     /**
